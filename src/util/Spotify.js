@@ -1,5 +1,5 @@
 let accessToken, expiresIn;
-const CLIENT_ID = 'acf476ed84b34f87ba1264a57fd917b9';
+const CLIENT_ID = '$$$$$$$$$$$$$$$';
 const REDIRECT_URI = "https://jamm-gm.surge.sh";
 
 const Spotify = {
