@@ -1,6 +1,6 @@
-.SearchResults {
+.PlaylistList {
     width: 50%;
-    height: 950px;
+    max-height: 950px;
     overflow-y: scroll;
     padding: 2.27rem 1.16rem;
     background-color: rgba(1, 12, 63, 0.7);
@@ -12,10 +12,15 @@
       width: 0px;
       background: transparent;
   }
+
+  .PlaylistItem :hover {
+    background-color: rgba(108, 65, 233, .7);
+  }
+  
   
   @media only screen and (max-width: 1150px) {
-    .SearchResults {
-      width: 90%;
-      margin-bottom: 2rem;
+    .PlaylistList {
+        width: 90%;
+        margin-bottom: 2rem;
     }
   }

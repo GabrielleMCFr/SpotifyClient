@@ -7,6 +7,7 @@ import { SearchBar } from '../SearchBar/SearchBar';
 import { SearchResults } from '../SearchResults/SearchResults';
 import { Playlist } from '../Playlist/Playlist';
 import Spotify from '../../util/Spotify';
+import { PlaylistList } from '../PlaylistList/PlaylistList';
 
 
 class App extends React.Component {
@@ -15,13 +16,29 @@ class App extends React.Component {
     this.state = {
       searchResults: [],
       playlistName: 'New Playlist',
-      playlistTracks: []
+      playlistTracks: [],
+      playlistId: null,
+      allPlaylists: []
     };
     this.addTrack = this.addTrack.bind(this);
     this.removeTrack = this.removeTrack.bind(this);
     this.updatePlaylistName = this.updatePlaylistName.bind(this);
     this.savePlaylist = this.savePlaylist.bind(this);
     this.search = this.search.bind(this);
+    this.filterResults = this.filterResults.bind(this);
+    this.selectPlaylist = this.selectPlaylist.bind(this)
+  }
+
+  filterResults(result) {
+    let filteredResults = result;
+
+    for (let i = 0; i < result.length; i++) {
+      for (let x = 0; x < this.state.playlistTracks.length; x++)
+      if (this.state.playlistTracks[x].id === result[i].id) {
+        filteredResults = filteredResults.filter(item => item.id !== result[i].id)
+      };
+    };
+    return filteredResults
   }
 
   addTrack(track) {
@@ -61,22 +78,50 @@ class App extends React.Component {
 
   savePlaylist() {
     const trackURIs = this.state.playlistTracks.map(track => track.uri)
-    Spotify.savePlaylist(this.state.playlistName, trackURIs).then(() => {
+    Spotify.savePlaylist(this.state.playlistName, trackURIs, this.state.playlistId).then(() => {
       this.setState({
         playlistName: 'New Playlist',
         playlistTracks: [],
+        playlistId: null
       });
+      document.getElementById('spotify-save').innerHTML = "Saved!"
+      setInterval( () => document.getElementById('spotify-save').innerHTML = 'SAVE TO SPOTIFY', 1500)
       
+      Spotify.getUserPlaylists().then(result => {
+        this.setState({
+            allPlaylists: result
+        })
+    })
     });
   }
 
   search(term) {
     Spotify.search(term).then(results => {
+      const filterResults = this.filterResults(results)
       this.setState({
-        searchResults: results
+        searchResults: filterResults
       })
     });
   }
+
+  selectPlaylist(name, id) {
+    Spotify.getPlaylist(id).then(results => {
+      this.setState({
+        playlistTracks: results,
+        playlistName: name,
+        playlistId: id
+      });
+      document.getElementById('spotify-save').innerHTML = 'SAVE TO SPOTIFY';
+    })
+  }
+
+  componentDidMount() {
+    Spotify.getUserPlaylists().then(result => {
+        this.setState({
+            allPlaylists: result
+        })
+    })
+}
 
   render() {
     return (
@@ -92,6 +137,11 @@ class App extends React.Component {
                     onNameChange={this.updatePlaylistName}
                     onSave={this.savePlaylist}
                     />
+          
+          </div>
+          <br></br>
+          <div className='App-playlist'>
+          <PlaylistList onSelect={this.selectPlaylist} playlists={this.state.allPlaylists}/>
           </div>
         </div>
       </div>

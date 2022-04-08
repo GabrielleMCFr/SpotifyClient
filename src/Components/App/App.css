@@ -41,7 +41,9 @@ body,
 html,
 #root {
   height: 100%;
+  min-width: 180px;
 }
+
 
 html {
   font-size: 18px;
@@ -80,13 +82,31 @@ h2 {
 
 .App-playlist {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   width: 100%;
 }
 
-@media only screen and (max-width: 1020px) {
+@media only screen and (max-width: 1150px) {
   .App-playlist {
     align-items: center;
     flex-direction: column;
+  }
+}
+
+@media only screen and (max-width: 445px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+@media only screen and (max-width: 280px) {
+  html {
+    font-size: 14px;
+  }
+}
+
+@media only screen and (max-width: 220px) {
+  html {
+    font-size: 12px;
   }
 }
